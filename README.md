@@ -24,7 +24,8 @@ Built for the **Binance Wallet × BNB Chain Agent ID Hackathon** (Nov 18 – Dec
 
 ## Contracts & Architecture
 - **Official Binance / SPACE ID Agent ID (BSC Mainnet)**: `0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F`
-- **AgentPassRegistry (`contracts/AgentPassRegistry.sol`)**: Solidity `0.8.28`, `evmVersion: paris`, optimizer `200` runs.
+- **Deployed AgentPassRegistry (BSC Mainnet)**: [`0x315fF606193d638A59a5CD58bba83E048c1c4e96`](https://bscscan.com/address/0x315fF606193d638A59a5CD58bba83E048c1c4e96)
+- **Compiler**: Solidity `0.8.28`, `evmVersion: paris`, optimizer `200` runs.
 - **BscScan Standard JSON Input**: `artifacts/BscScanStandardJsonInput.json`
 - **Live Intelligence Gateway**: `https://x402-zero-proxy-api.x402-zero-proxy-api.workers.dev`
 - **Live Web App (GitHub Pages)**: `https://shawn1905.github.io/agentpass-bsc/`
