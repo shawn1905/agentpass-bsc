@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AgentPass.ai — Binance Agent ID Intelligence Pass &amp; On-Chain AI Directory (BNB Chain)</title>
+  <meta name="description" content="Zero-custody BNB Smart Chain pass &amp; Sybil-resistant AI Agent directory gated by Binance Agent ID (name.ai). Unlock 7 zero-proxy AI intelligence APIs with zero API keys." />
+  <style>
+    :root {
+      --bg: #0b0e11;
+      --card: #141920;
+      --card-2: #1b222c;
+      --border: #2b3139;
+      --gold: #f0b90b;
+      --gold-soft: rgba(240, 185, 11, 0.14);
+      --green: #0ecb81;
+      --red: #f6465d;
+      --text: #eaecef;
+      --muted: #848e9c;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 20% -10%, rgba(240, 185, 11, 0.08), transparent 45%), var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.55;
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 18px 64px; }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap; padding-bottom: 18px; border-bottom: 1px solid var(--border);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, #f0b90b, #f8d12f);
+      color: #0b0e11; font-weight: 800; display: grid; place-items: center; font-size: 18px;
+    }
+    .brand h1 { margin: 0; font-size: 20px; letter-spacing: -0.02em; }
+    .brand small { color: var(--muted); font-size: 12px; display: block; }
+    .nav-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px;
+      border-radius: 999px; font-size: 12px; border: 1px solid var(--border);
+      background: var(--card); color: var(--muted);
+    }
+    .pill.gold { border-color: rgba(240,185,11,0.45); color: var(--gold); background: var(--gold-soft); }
+    .pill.green { border-color: rgba(14,203,129,0.4); color: var(--green); background: rgba(14,203,129,0.1); }
+    .pill.red { border-color: rgba(246,70,93,0.4); color: var(--red); background: rgba(246,70,93,0.1); }
+    button {
+      cursor: pointer; border-radius: 9px; font-weight: 600; font-size: 13px;
+      padding: 9px 15px; border: 1px solid var(--border); background: var(--card-2); color: var(--text);
+      transition: all .15s ease;
+    }
+    button:hover:not(:disabled) { border-color: var(--gold); }
+    button.primary { background: var(--gold); color: #0b0e11; border-color: var(--gold); }
+    button.primary:hover:not(:disabled) { filter: brightness(1.06); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .hero { margin: 22px 0 18px; }
+    .hero h2 { margin: 0 0 8px; font-size: 26px; letter-spacing: -0.02em; }
+    .hero p { margin: 0; color: var(--muted); max-width: 780px; font-size: 14.5px; }
+    .stats {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px; margin: 18px 0;
+    }
+    .stat {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+    }
+    .stat .k { font-size: 12px; color: var(--muted); }
+    .stat .v { font-size: 24px; font-weight: 700; margin-top: 4px; font-family: var(--mono); }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 18px 20px; margin-bottom: 16px;
+    }
+    .card h3 { margin: 0 0 10px; font-size: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .security-bar {
+      display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 18px;
+      padding: 10px 14px; border-radius: 10px; background: rgba(14,203,129,0.06);
+      border: 1px solid rgba(14,203,129,0.22); font-size: 12.5px; color: #b7f5d8;
+    }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 18px 0 14px; }
+    .tab { padding: 8px 14px; border-radius: 9px; background: var(--card); border: 1px solid var(--border); color: var(--muted); }
+    .tab.active { background: var(--gold-soft); border-color: var(--gold); color: var(--gold); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    input, select, textarea {
+      background: #0e1217; color: var(--text); border: 1px solid var(--border);
+      border-radius: 8px; padding: 9px 12px; font-size: 13.5px; font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); }
+    .grow { flex: 1 1 240px; }
+    pre {
+      background: #090c10; border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px; overflow: auto; max-height: 360px; font-family: var(--mono);
+      font-size: 12px; color: #d1e7dd; margin: 12px 0 0;
+    }
+    .tool-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 10px; margin-bottom: 14px;
+    }
+    .tool-card {
+      background: var(--card-2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px; cursor: pointer; transition: border-color .15s;
+    }
+    .tool-card.selected, .tool-card:hover { border-color: var(--gold); }
+    .tool-card .name { font-weight: 700; font-size: 13.5px; }
+    .tool-card .desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .tool-card .price { font-family: var(--mono); font-size: 11px; color: var(--green); margin-top: 6px; }
+    .dir-item {
+      border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;
+      background: var(--card-2); margin-bottom: 10px;
+    }
+    .mono { font-family: var(--mono); font-size: 12.5px; word-break: break-all; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .status-msg { margin-top: 10px; font-size: 13px; }
+    .ok { color: var(--green); }
+    .err { color: var(--red); }
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">AP</div>
+      <div>
+        <h1>AgentPass.ai</h1>
+        <small data-i18n="subtitle">Binance Agent ID (name.ai) Intelligence Pass &amp; On-Chain AI Directory · BNB Smart Chain</small>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <span class="pill gold">BNB Smart Chain (56)</span>
+      <button id="btnLang" title="Switch language">中文 / EN</button>
+      <button id="btnConnect" class="primary" data-i18n="connect">Connect Injected Wallet</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h2 data-i18n="heroTitle">Unlock 7 Live Zero-Proxy AI Intelligence APIs with Your Binance Agent ID</h2>
+    <p data-i18n="heroDesc">
+      Non-transferable Agent ID holders (name.ai on BNB Smart Chain) claim a free 24-hour on-chain Pass,
+      publish their MCP/x402 agent endpoints to a Sybil-resistant directory, and call live SEC EDGAR, Polymarket,
+      Shopify, YC, Website Enrichment, Webpage-to-Markdown, and Google News endpoints with zero API keys and zero fees.
+    </p>
+  </section>
+
+  <div class="security-bar" data-i18n="secBar">
+    <span>✓ Ownerless &amp; Immutable Contract</span>
+    <span>·</span>
+    <span>✓ Zero Custody / Zero Fees</span>
+    <span>·</span>
+    <span>✓ Direct Injected Wallet Only (Zero QR-Code Login)</span>
+    <span>·</span>
+    <span>✓ Official SPACE ID Agent ID: <span class="mono">0x60B9...022F</span></span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="k" data-i18n="stUnique">Unique Agent IDs</div><div class="v" id="stUnique">—</div></div>
+    <div class="stat"><div class="k" data-i18n="stPasses">24h Passes Claimed</div><div class="v" id="stPasses">—</div></div>
+    <div class="stat"><div class="k" data-i18n="stEndpoints">Verified Agent Endpoints</div><div class="v" id="stEndpoints">—</div></div>
+    <div class="stat"><div class="k" data-i18n="stEndorse">Peer Endorsements</div><div class="v" id="stEndorse">—</div></div>
+  </div>
+
+  <div class="card" id="walletCard">
+    <h3>
+      <span data-i18n="walletTitle">Wallet &amp; Agent ID Status</span>
+      <span id="walletBadges" class="row">
+        <span class="pill" id="badgeNet">Not Connected</span>
+        <span class="pill" id="badgeId">Agent ID: —</span>
+        <span class="pill" id="badgePass">Pass: —</span>
+      </span>
+    </h3>
+    <div class="row" style="justify-content:space-between;">
+      <div>
+        <div class="mono" id="walletAddr">Connect Binance Wallet Extension, Binance App DApp Browser, or MetaMask (EIP-1193 / EIP-6963).</div>
+        <div class="muted" id="walletMeta" style="margin-top:4px;"></div>
+      </div>
+      <div class="row" id="detectedWallets"></div>
+    </div>
+    <div class="status-msg" id="walletMsg"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="pass" data-i18n="tabPass">1. Claim 24h Pass</button>
+    <button class="tab" data-tab="intel" data-i18n="tabIntel">2. Live 7-in-1 AI Terminal</button>
+    <button class="tab" data-tab="dir" data-i18n="tabDir">3. On-Chain Agent Directory</button>
+    <button class="tab" data-tab="agentic" data-i18n="tabAgentic">4. Agentic Wallet CLI / Skill</button>
+  </div>
+
+  <!-- TAB 1: CLAIM PASS -->
+  <section class="panel active card" id="panel-pass">
+    <h3>
+      <span data-i18n="claimTitle">Claim Free 24h Intelligence Pass on BNB Smart Chain</span>
+      <span class="pill green" data-i18n="zeroFee">0 Protocol Fee · Gas ~0.0001 BNB</span>
+    </h3>
+    <p class="muted" data-i18n="claimDesc">
+      Calls <code>AgentPassRegistry.claimPass(label)</code> on BNB Smart Chain. Verifies <code>AGENT_ID.balanceOf(msg.sender) &gt; 0</code>
+      on-chain, records your streak, and immediately unlocks all 7 AI intelligence APIs for 24 hours.
+    </p>
+    <div class="row" style="margin-top:12px;">
+      <input id="inpLabel" class="grow" placeholder="Optional handle (e.g. satoshi.ai) — leave blank to keep current" />
+      <button id="btnClaim" class="primary" disabled data-i18n="btnClaim">Claim / Extend 24h Pass</button>
+    </div>
+    <div class="status-msg" id="claimMsg"></div>
+  </section>
+
+  <!-- TAB 2: LIVE 7-IN-1 AI TERMINAL -->
+  <section class="panel card" id="panel-intel">
+    <h3>
+      <span data-i18n="intelTitle">Live 7-in-1 Zero-Proxy AI Intelligence Terminal</span>
+      <button id="btnSignAuth" disabled data-i18n="btnSignAuth">Sign Free EIP-191 Session (5m, 0 Gas)</button>
+    </h3>
+    <p class="muted" data-i18n="intelDesc">
+      Normally billed per-call in Base USDC via x402 ($0.004–$0.008/req). With an active BSC AgentPass, sign a free off-chain EIP-191 message
+      and the Cloudflare Worker verifies your on-chain BSC pass in real time with $0.00 cost.
+    </p>
+    <div class="tool-grid" id="toolGrid"></div>
+    <div class="row">
+      <input id="inpQuery" class="grow mono" value="ticker=NVDA&form=10-K&limit=3" />
+      <button id="btnRunTool" class="primary" data-i18n="btnRunTool">Query Live API</button>
+    </div>
+    <div class="status-msg" id="intelMsg"></div>
+    <pre id="intelOut">{ "hint": "Select one of the 7 intelligence tools above, sign EIP-191 auth with your Agent ID wallet, and click Query Live API." }</pre>
+  </section>
+
+  <!-- TAB 3: ON-CHAIN AGENT DIRECTORY -->
+  <section class="panel card" id="panel-dir">
+    <h3>
+      <span data-i18n="dirTitle">Sybil-Resistant AI Agent Endpoint Directory</span>
+      <button id="btnRefreshDir" data-i18n="btnRefresh">Refresh On-Chain Directory</button>
+    </h3>
+    <p class="muted" data-i18n="dirDesc">
+      Because each KYC-verified Binance user can hold only one non-transferable Agent ID, every listing and peer endorsement is naturally Sybil-resistant.
+      Registering your MCP / x402 endpoint also activates your 24h Intelligence Pass in the same transaction.
+    </p>
+    <div class="row" style="margin-top:10px;">
+      <input id="inpEpUrl" class="grow" placeholder="Your Agent MCP / x402 / A2A URL (https://...)" />
+      <input id="inpEpCap" class="grow" placeholder="Capabilities (e.g. SEC Filings, Funding Signals, RAG Markdown)" />
+      <button id="btnRegEp" class="primary" disabled data-i18n="btnRegEp">Publish Endpoint On-Chain</button>
+    </div>
+    <div class="status-msg" id="dirMsg"></div>
+    <div id="dirList" style="margin-top:16px;"></div>
+  </section>
+
+  <!-- TAB 4: AGENTIC WALLET CLI -->
+  <section class="panel card" id="panel-agentic">
+    <h3>
+      <span data-i18n="agenticTitle">Machine-to-Machine Usage for Autonomous AI Agents</span>
+      <span class="pill gold">EIP-191 + BSC RPC</span>
+    </h3>
+    <p class="muted" data-i18n="agenticDesc">
+      Autonomous AI agents equipped with a Binance Agentic Wallet (`name.ai`) can call the on-chain pass contract directly and authenticate
+      against the Cloudflare Worker over pure HTTP without browser interaction or API keys:
+    </p>
+    <pre id="cliSnippet"></pre>
+  </section>
+
+  <footer>
+    <div>
+      Agent ID (BSC): <a id="lnkAgentId" target="_blank" rel="noopener">0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F</a>
+      · Registry: <a id="lnkRegistry" target="_blank" rel="noopener">Pending Mainnet Deploy</a>
+    </div>
+    <div>
+      API Gateway: <a id="lnkApi" target="_blank" rel="noopener">x402-zero-proxy-api.workers.dev</a>
+      · <a href="https://github.com/shawn1905/agentpass-bsc" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </footer>
+</div>
+
+<script type="module">
+import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@6.13.4/+esm";
+
+// ======= CONFIGURATION =======
+const CONFIG = {
+  CHAIN_ID: 56,
+  CHAIN_HEX: "0x38",
+  BSC_RPC: "https://bsc-dataseed.binance.org/",
+  AGENT_ID_CONTRACT: "0x60B9262456dE011F7d15a54CdD8c48bAaa8B022F",
+  // Updated immediately once deployed to BSC Mainnet (also overridable via ?registry=0x... for preview)
+  REGISTRY_CONTRACT: new URLSearchParams(location.search).get("registry") || "",
+  API_BASE: "https://x402-zero-proxy-api.x402-zero-proxy-api.workers.dev",
+};
+
+const AGENT_ID_ABI = ["function balanceOf(address owner) view returns (uint256)"];
+const REGISTRY_ABI = [
+  "function hasAgentID(address user) view returns (bool)",
+  "function hasActivePass(address user) view returns (bool)",
+  "function claimPass(string rawLabel)",
+  "function registerAgentEndpoint(string endpointUrl, string capabilities)",
+  "function endorseAgent(address target, string note)",
+  "function getStats() view returns (uint256 uniqueAgentsCount, uint256 totalPassesCount, uint256 totalEndpointsCount, uint256 totalEndorsementsCount)",
+  "function getAgentProfile(address user) view returns (bool hasId, bool activePass, bool labelVerified, uint64 expiry, uint32 streak, uint32 passes, uint32 endorsements, string label, string endpointUrl, string capabilities)",
+  "function getDirectory(uint256 offset, uint256 limit) view returns (tuple(address agent, bool activePass, bool labelVerified, uint64 passExpiry, uint32 streak, uint32 endorsements, string label, string endpointUrl, string capabilities)[] entries, uint256 total)"
+];
+
+const TOOLS = [
+  { id: "sec", name: "SEC EDGAR Filings", path: "/v1/sec/filings", sample: "ticker=NVDA&form=10-K&limit=3", normal: "$0.008", desc: "Official 10-K, 10-Q, 8-K, Form 4 filings with direct SEC archive URLs" },
+  { id: "markets", name: "Polymarket Live Odds", path: "/v1/markets/odds", sample: "q=bitcoin&limit=5", normal: "$0.005", desc: "Real-time prediction market probabilities, 24h volume & liquidity" },
+  { id: "markdown", name: "Webpage → LLM Markdown", path: "/v1/markdown", sample: "url=https://www.bnbchain.org/en&maxChars=4000", normal: "$0.005", desc: "Clean RAG-ready Markdown extraction with token counts (zero browser)" },
+  { id: "enrich", name: "Website Contacts & Tech", path: "/v1/website/enrich", sample: "url=https://posthog.com", normal: "$0.008", desc: "Extract business emails, social profiles & 25+ tech stack signals" },
+  { id: "yc", name: "YC 6,400+ Startups", path: "/v1/yc/search", sample: "q=agent&hiring=true&limit=5", normal: "$0.005", desc: "Search Y Combinator startups by batch, keyword & hiring status" },
+  { id: "shopify", name: "Shopify Store Catalog", path: "/v1/shopify/products", sample: "domain=allbirds.com&limit=5", normal: "$0.005", desc: "Extract live storefront SKUs, prices, discounts & stock status" },
+  { id: "news", name: "Google News Real-Time", path: "/v1/news/search", sample: "q=BNB+Chain+AI+Agent&when=7d&limit=5", normal: "$0.004", desc: "Live global headlines across 50+ countries via zero-proxy RSS" },
+];
+
+const I18N = {
+  en: {
+    subtitle: "Binance Agent ID (name.ai) Intelligence Pass & On-Chain AI Directory · BNB Smart Chain",
+    connect: "Connect Injected Wallet",
+    heroTitle: "Unlock 7 Live Zero-Proxy AI Intelligence APIs with Your Binance Agent ID",
+    heroDesc: "Non-transferable Agent ID holders (name.ai on BNB Smart Chain) claim a free 24-hour on-chain Pass, publish their MCP/x402 agent endpoints to a Sybil-resistant directory, and call live SEC EDGAR, Polymarket, Shopify, YC, Website Enrichment, Webpage-to-Markdown, and Google News endpoints with zero API keys and zero fees.",
+    stUnique: "Unique Agent IDs", stPasses: "24h Passes Claimed", stEndpoints: "Verified Agent Endpoints", stEndorse: "Peer Endorsements",
+    walletTitle: "Wallet & Agent ID Status",
+    tabPass: "1. Claim 24h Pass", tabIntel: "2. Live 7-in-1 AI Terminal", tabDir: "3. On-Chain Agent Directory", tabAgentic: "4. Agentic Wallet CLI / Skill",
+    claimTitle: "Claim Free 24h Intelligence Pass on BNB Smart Chain", zeroFee: "0 Protocol Fee · Gas ~0.0001 BNB",
+    btnClaim: "Claim / Extend 24h Pass", intelTitle: "Live 7-in-1 Zero-Proxy AI Intelligence Terminal",
+    btnSignAuth: "Sign Free EIP-191 Session (5m, 0 Gas)", btnRunTool: "Query Live API",
+    dirTitle: "Sybil-Resistant AI Agent Endpoint Directory", btnRefresh: "Refresh On-Chain Directory", btnRegEp: "Publish Endpoint On-Chain",
+    agenticTitle: "Machine-to-Machine Usage for Autonomous AI Agents",
+  },
+  zh: {
+    subtitle: "币安 Agent ID (name.ai) 链上 AI 情报通行证与防女巫 Agent 目录 · BNB Smart Chain",
+    connect: "连接浏览器/App 钱包",
+    heroTitle: "持有币安 Agent ID，链上 0 费用解锁 7 大 AI 实时投研与数据接口",
+    heroDesc: "BNB Smart Chain 上持有不可转让 Agent ID（name.ai）的钱包，可免费领取 24 小时链上通行证、把自己的 MCP/x402 端点发布至防女巫公开目录，并免 API Key、0 手续费直连调用 SEC 财报、Polymarket 赔率、Shopify 选品、YC 创企库、官网技术栈/邮箱、网页转 Markdown 与 Google News 实时接口。",
+    stUnique: "独立 Agent ID 数", stPasses: "累计领证次数", stEndpoints: "链上认证端点", stEndorse: "防女巫背书数",
+    walletTitle: "钱包与 Agent ID 实时校验",
+    tabPass: "1. 领取 24h 通行证", tabIntel: "2. 7 合 1 实测终端", tabDir: "3. 链上 Agent 目录", tabAgentic: "4. Agentic Wallet 接入脚本",
+    claimTitle: "在 BNB Smart Chain 免费激活 24 小时情报通行证", zeroFee: "0 协议费用 · 仅需极低 BSC Gas",
+    btnClaim: "立即激活 / 续期 24h 通行证", intelTitle: "7 合 1 零代理 AI 情报实时调用终端",
+    btnSignAuth: "签署免 Gas EIP-191 凭证 (5 分钟有效)", btnRunTool: "实时调用接口",
+    dirTitle: "一人一证 · 防女巫链上 AI Agent 目录", btnRefresh: "刷新链上目录", btnRegEp: "上链发布 Agent 端点",
+    agenticTitle: "AI Agent 自动化调用规范（Agentic Wallet 兼容）",
+  }
+};
+
+let lang = (navigator.language || "").toLowerCase().startsWith("zh") ? "zh" : "en";
+let selectedTool = TOOLS[0];
+let signer = null;
+let userAddress = "";
+let authSession = null; // { address, timestamp, signature }
+const discoveredProviders = [];
+
+const $ = (id) => document.getElementById(id);
+const readProvider = new ethers.JsonRpcProvider(CONFIG.BSC_RPC);
+
+function applyI18n() {
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (I18N[lang][key]) el.textContent = I18N[lang][key];
+  });
+}
+
+// EIP-6963 multi-wallet discovery (strictly injected only — zero QR code login)
+window.addEventListener("eip6963:announceProvider", (ev) => {
+  const detail = ev.detail;
+  if (!discoveredProviders.some((p) => p.info.uuid === detail.info.uuid)) {
+    discoveredProviders.push(detail);
+    renderWalletButtons();
+  }
+});
+window.dispatchEvent(new Event("eip6963:requestProvider"));
+
+function renderWalletButtons() {
+  const box = $("detectedWallets");
+  box.innerHTML = "";
+  discoveredProviders.forEach((entry) => {
+    const b = document.createElement("button");
+    b.textContent = entry.info.name;
+    b.onclick = () => connectWithProvider(entry.provider, entry.info.name);
+    box.appendChild(b);
+  });
+}
+
+async function connectWithProvider(eip1193, label = "Injected Wallet") {
+  $("walletMsg").innerHTML = "";
+  try {
+    if (!eip1193) throw new Error("No injected wallet detected. Open in Binance App DApp Browser, Binance Wallet Extension, or MetaMask.");
+    await eip1193.request({ method: "eth_requestAccounts" });
+    const chainHex = await eip1193.request({ method: "eth_chainId" });
+    if (parseInt(chainHex, 16) !== CONFIG.CHAIN_ID) {
+      try {
+        await eip1193.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CONFIG.CHAIN_HEX }] });
+      } catch (swErr) {
+        if (swErr.code === 4902) {
+          await eip1193.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+              chainId: CONFIG.CHAIN_HEX,
+              chainName: "BNB Smart Chain",
+              nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+              rpcUrls: [CONFIG.BSC_RPC],
+              blockExplorerUrls: ["https://bscscan.com"],
+            }],
+          });
+        } else {
+          throw swErr;
+        }
+      }
+    }
+    const browserProvider = new ethers.BrowserProvider(eip1193);
+    signer = await browserProvider.getSigner();
+    userAddress = await signer.getAddress();
+    authSession = null;
+    $("walletAddr").textContent = `${label}: ${userAddress}`;
+    $("badgeNet").textContent = "BSC Mainnet (56)";
+    $("badgeNet").className = "pill green";
+    $("btnConnect").textContent = `${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
+    $("btnSignAuth").disabled = false;
+    await refreshUserStatus();
+  } catch (e) {
+    $("walletMsg").innerHTML = `<span class="err">${escapeHtml(e.shortMessage || e.message || String(e))}</span>`;
+  }
+}
+
+async function refreshGlobalStats() {
+  $("lnkAgentId").href = `https://bscscan.com/address/${CONFIG.AGENT_ID_CONTRACT}`;
+  $("lnkApi").href = CONFIG.API_BASE;
+  if (!CONFIG.REGISTRY_CONTRACT) {
+    try {
+      const info = await fetch(`${CONFIG.API_BASE}/agentpass/info`).then((r) => r.json());
+      if (info.registryContract) CONFIG.REGISTRY_CONTRACT = info.registryContract;
+    } catch {}
+  }
+  if (CONFIG.REGISTRY_CONTRACT) {
+    $("lnkRegistry").textContent = `${CONFIG.REGISTRY_CONTRACT.slice(0, 8)}...${CONFIG.REGISTRY_CONTRACT.slice(-6)}`;
+    $("lnkRegistry").href = `https://bscscan.com/address/${CONFIG.REGISTRY_CONTRACT}`;
+    try {
+      const reg = new ethers.Contract(CONFIG.REGISTRY_CONTRACT, REGISTRY_ABI, readProvider);
+      const [u, p, ep, en] = await reg.getStats();
+      $("stUnique").textContent = `${u.toString()} / 30+`;
+      $("stPasses").textContent = p.toString();
+      $("stEndpoints").textContent = ep.toString();
+      $("stEndorse").textContent = en.toString();
+      await refreshDirectory();
+    } catch (e) {
+      console.warn("Stats fetch err:", e);
+    }
+  }
+  renderCliSnippet();
+}
+
+async function refreshUserStatus() {
+  if (!userAddress) return;
+  try {
+    const idContract = new ethers.Contract(CONFIG.AGENT_ID_CONTRACT, AGENT_ID_ABI, readProvider);
+    const bal = await idContract.balanceOf(userAddress);
+    const hasId = bal > 0n;
+    $("badgeId").textContent = hasId ? "Agent ID: Verified" : "Agent ID: Not Found";
+    $("badgeId").className = hasId ? "pill green" : "pill red";
+    $("btnClaim").disabled = !hasId || !CONFIG.REGISTRY_CONTRACT;
+    $("btnRegEp").disabled = !hasId || !CONFIG.REGISTRY_CONTRACT;
+
+    if (CONFIG.REGISTRY_CONTRACT) {
+      const reg = new ethers.Contract(CONFIG.REGISTRY_CONTRACT, REGISTRY_ABI, readProvider);
+      const prof = await reg.getAgentProfile(userAddress);
+      const active = prof.activePass;
+      $("badgePass").textContent = active ? `Pass Active (Streak ${prof.streak}d)` : "Pass: Inactive";
+      $("badgePass").className = active ? "pill green" : "pill gold";
+      const expStr = Number(prof.expiry) > 0 ? new Date(Number(prof.expiry) * 1000).toLocaleString() : "Never";
+      $("walletMeta").textContent = `Handle: ${prof.label ? prof.label + ".ai" : "unset"} · Passes: ${prof.passes} · Endorsements: ${prof.endorsements} · Expiry: ${expStr}`;
+    } else {
+      $("badgePass").textContent = hasId ? "Direct Agent ID Mode" : "Pass: Needs Agent ID";
+      $("badgePass").className = hasId ? "pill green" : "pill";
+      $("walletMeta").textContent = hasId
+        ? "Agent ID verified directly on BSC Mainnet. You can sign EIP-191 auth and call all 7 live APIs now."
+        : "Claim your free name.ai Agent ID in Binance App -> Wallet -> Agent ID, then reconnect.";
+    }
+  } catch (e) {
+    $("walletMsg").innerHTML = `<span class="err">BSC RPC read error: ${escapeHtml(e.message || String(e))}</span>`;
+  }
+}
+
+async function refreshDirectory() {
+  if (!CONFIG.REGISTRY_CONTRACT) {
+    $("dirList").innerHTML = `<div class="muted">Deploy AgentPassRegistry to BNB Smart Chain to populate the live on-chain AI Agent directory.</div>`;
+    return;
+  }
+  try {
+    const reg = new ethers.Contract(CONFIG.REGISTRY_CONTRACT, REGISTRY_ABI, readProvider);
+    const [entries, total] = await reg.getDirectory(0, 50);
+    if (!entries.length) {
+      $("dirList").innerHTML = `<div class="muted">No AI agent endpoints published yet. Be the first Agent ID holder to register above!</div>`;
+      return;
+    }
+    $("dirList").innerHTML = entries.map((e) => `
+      <div class="dir-item">
+        <div class="row" style="justify-content:space-between;">
+          <div>
+            <strong>${e.label ? escapeHtml(e.label) + ".ai" : e.agent.slice(0, 8) + "..." + e.agent.slice(-6)}</strong>
+            ${e.activePass ? '<span class="pill green" style="margin-left:6px;">Active Pass</span>' : ''}
+            <span class="pill gold" style="margin-left:6px;">★ ${e.endorsements} Endorsements</span>
+          </div>
+          <button onclick="window._endorse('${e.agent}')">Endorse Agent</button>
+        </div>
+        <div class="mono" style="margin-top:6px;"><a href="${escapeHtml(e.endpointUrl)}" target="_blank" rel="noopener">${escapeHtml(e.endpointUrl)}</a></div>
+        <div class="muted" style="margin-top:4px;">${escapeHtml(e.capabilities)}</div>
+      </div>
+    `).join("");
+  } catch (e) {
+    $("dirList").innerHTML = `<div class="err">${escapeHtml(e.message || String(e))}</div>`;
+  }
+}
+
+window._endorse = async (target) => {
+  if (!signer || !CONFIG.REGISTRY_CONTRACT) {
+    $("dirMsg").innerHTML = `<span class="err">Connect an Agent ID wallet first.</span>`;
+    return;
+  }
+  const note = prompt("Optional short endorsement note (max 160 chars):", "Verified useful AI Agent on BNB Chain");
+  if (note === null) return;
+  try {
+    $("dirMsg").textContent = "Submitting endorsement on BNB Smart Chain...";
+    const reg = new ethers.Contract(CONFIG.REGISTRY_CONTRACT, REGISTRY_ABI, signer);
+    const tx = await reg.endorseAgent(target, note.slice(0, 160));
+    await tx.wait();
+    $("dirMsg").innerHTML = `<span class="ok">Endorsed on-chain! Tx: <a target="_blank" href="https://bscscan.com/tx/${tx.hash}">${tx.hash.slice(0, 14)}...</a></span>`;
+    await refreshGlobalStats();
+  } catch (e) {
+    $("dirMsg").innerHTML = `<span class="err">${escapeHtml(e.shortMessage || e.message || String(e))}</span>`;
+  }
+};
+
+function renderTools() {
+  const grid = $("toolGrid");
+  grid.innerHTML = TOOLS.map((t) => `
+    <div class="tool-card ${t.id === selectedTool.id ? "selected" : ""}" data-tid="${t.id}">
+      <div class="name">${t.name}</div>
+      <div class="desc">${t.desc}</div>
+      <div class="price">AgentPass: $0.00 (x402 normal ${t.normal})</div>
+    </div>
+  `).join("");
+  grid.querySelectorAll(".tool-card").forEach((el) => {
+    el.onclick = () => {
+      selectedTool = TOOLS.find((x) => x.id === el.getAttribute("data-tid"));
+      $("inpQuery").value = selectedTool.sample;
+      renderTools();
+    };
+  });
+}
+
+function renderCliSnippet() {
+  const regAddr = CONFIG.REGISTRY_CONTRACT || "<DEPLOYED_AGENTPASS_REGISTRY_ADDRESS>";
+  $("cliSnippet").textContent = `// Autonomous Agentic Wallet / Node.js example (zero API keys, zero QR code)
+import { ethers } from "ethers";
+
+const wallet = new ethers.Wallet(process.env.AGENT_PRIVATE_KEY, new ethers.JsonRpcProvider("${CONFIG.BSC_RPC}"));
+const registry = new ethers.Contract("${regAddr}", ["function claimPass(string)"], wallet);
+
+// 1. Activate 24h on-chain Intelligence Pass on BNB Smart Chain (~$0.005 gas)
+await (await registry.claimPass("myagent.ai")).wait();
+
+// 2. Sign free EIP-191 session header (valid 5 minutes, 0 gas)
+const ts = String(Math.floor(Date.now() / 1000));
+const msg = [
+  "AgentPass.ai Intelligence Access",
+  \`Address: \${wallet.address.toLowerCase()}\`,
+  \`Timestamp: \${ts}\`,
+  "Chain: BNB Smart Chain (56)"
+].join("\\n");
+const sig = await wallet.signMessage(msg);
+
+// 3. Call any of the 7 live zero-proxy AI intelligence APIs for $0.00
+const res = await fetch("${CONFIG.API_BASE}/v1/sec/filings?ticker=NVDA&form=10-K&limit=3", {
+  headers: {
+    "x-agentpass-address": wallet.address,
+    "x-agentpass-timestamp": ts,
+    "x-agentpass-signature": sig,
+  },
+});
+console.log(res.headers.get("x-auth-rail"), await res.json());`;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// Event bindings
+$("btnLang").onclick = () => { lang = lang === "en" ? "zh" : "en"; applyI18n(); };
+$("btnConnect").onclick = () => connectWithProvider(window.BinanceChain || window.ethereum, window.BinanceChain ? "Binance Wallet" : "Injected Wallet");
+
+document.querySelectorAll(".tab").forEach((btn) => {
+  btn.onclick = () => {
+    document.querySelectorAll(".tab").forEach((b) => b.classList.remove("active"));
+    document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
+    btn.classList.add("active");
+    $(`panel-${btn.getAttribute("data-tab")}`).classList.add("active");
+  };
+});
+
+$("btnClaim").onclick = async () => {
+  if (!signer || !CONFIG.REGISTRY_CONTRACT) return;
+  try {
+    $("claimMsg").textContent = "Confirm transaction in your wallet...";
+    const reg = new ethers.Contract(CONFIG.REGISTRY_CONTRACT, REGISTRY_ABI, signer);
+    const tx = await reg.claimPass($("inpLabel").value.trim());
+    $("claimMsg").textContent = `Tx submitted (${tx.hash.slice(0, 12)}...), waiting for BSC confirmation...`;
+    await tx.wait();
+    $("claimMsg").innerHTML = `<span class="ok">24h Intelligence Pass activated! <a target="_blank" href="https://bscscan.com/tx/${tx.hash}">View on BscScan</a></span>`;
+    await Promise.all([refreshUserStatus(), refreshGlobalStats()]);
+  } catch (e) {
+    $("claimMsg").innerHTML = `<span class="err">${escapeHtml(e.shortMessage || e.message || String(e))}</span>`;
+  }
+};
+
+$("btnRegEp").onclick = async () => {
+  if (!signer || !CONFIG.REGISTRY_CONTRACT) return;
+  const epUrl = $("inpEpUrl").value.trim();
+  const cap = $("inpEpCap").value.trim();
+  if (!epUrl.startsWith("http")) {
+    $("dirMsg").innerHTML = `<span class="err">Endpoint URL must start with https:// or http://</span>`;
+    return;
+  }
+  try {
+    $("dirMsg").textContent = "Publishing Agent endpoint to BNB Smart Chain...";
+    const reg = new ethers.Contract(CONFIG.REGISTRY_CONTRACT, REGISTRY_ABI, signer);
+    const tx = await reg.registerAgentEndpoint(epUrl, cap || "AI Agent Endpoint");
+    await tx.wait();
+    $("dirMsg").innerHTML = `<span class="ok">Endpoint published on-chain! <a target="_blank" href="https://bscscan.com/tx/${tx.hash}">View on BscScan</a></span>`;
+    await Promise.all([refreshUserStatus(), refreshGlobalStats()]);
+  } catch (e) {
+    $("dirMsg").innerHTML = `<span class="err">${escapeHtml(e.shortMessage || e.message || String(e))}</span>`;
+  }
+};
+
+$("btnRefreshDir").onclick = refreshGlobalStats;
+
+$("btnSignAuth").onclick = async () => {
+  if (!signer) return;
+  try {
+    const ts = String(Math.floor(Date.now() / 1000));
+    const msg = [
+      "AgentPass.ai Intelligence Access",
+      `Address: ${userAddress.toLowerCase()}`,
+      `Timestamp: ${ts}`,
+      "Chain: BNB Smart Chain (56)",
+    ].join("\n");
+    const sig = await signer.signMessage(msg);
+    authSession = { address: userAddress, timestamp: ts, signature: sig };
+    $("intelMsg").innerHTML = `<span class="ok">Free EIP-191 session signed (valid 5 min). Click Query Live API below!</span>`;
+  } catch (e) {
+    $("intelMsg").innerHTML = `<span class="err">${escapeHtml(e.message || String(e))}</span>`;
+  }
+};
+
+$("btnRunTool").onclick = async () => {
+  const qs = $("inpQuery").value.trim().replace(/^\?/, "");
+  const url = `${CONFIG.API_BASE}${selectedTool.path}${qs ? "?" + qs : ""}`;
+  const headers = {};
+  if (authSession) {
+    headers["x-agentpass-address"] = authSession.address;
+    headers["x-agentpass-timestamp"] = authSession.timestamp;
+    headers["x-agentpass-signature"] = authSession.signature;
+  }
+  $("intelMsg").textContent = `Calling ${url} ...`;
+  try {
+    const res = await fetch(url, { headers });
+    const rail = res.headers.get("x-auth-rail") || (res.status === 402 ? "x402-payment-required" : "none");
+    const txt = await res.text();
+    let pretty = txt;
+    try { pretty = JSON.stringify(JSON.parse(txt), null, 2); } catch {}
+    $("intelOut").textContent = pretty;
+    if (res.ok) {
+      $("intelMsg").innerHTML = `<span class="ok">HTTP ${res.status} OK · Auth Rail: ${escapeHtml(rail)} ($0.00 with AgentPass)</span>`;
+    } else if (res.status === 402) {
+      $("intelMsg").innerHTML = `<span class="err">HTTP 402 Payment Required — Connect an Agent ID wallet &amp; sign free EIP-191 session above to unlock for $0.00 (or pay via x402 Base USDC).</span>`;
+    } else {
+      $("intelMsg").innerHTML = `<span class="err">HTTP ${res.status} — Check response below.</span>`;
+    }
+  } catch (e) {
+    $("intelMsg").innerHTML = `<span class="err">${escapeHtml(e.message || String(e))}</span>`;
+  }
+};
+
+applyI18n();
+renderTools();
+refreshGlobalStats();
+</script>
+</body>
+</html>
