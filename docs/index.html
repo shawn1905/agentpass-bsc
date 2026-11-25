@@ -207,6 +207,27 @@
       <button id="btnClaim" class="primary" data-i18n="btnClaim">Claim / Extend 24h Pass</button>
     </div>
     <div class="status-msg" id="claimMsg"></div>
+
+    <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border);">
+      <div class="row" style="justify-content:space-between;margin-bottom:8px;">
+        <strong style="font-size:13.5px;color:var(--gold);">Binance Agentic Wallet (<code>baw</code> CLI / AI Agent) — 1-Click Call</strong>
+        <button id="btnCopyBaw" type="button">Copy Agent Prompt / CLI</button>
+      </div>
+      <div class="muted" style="font-size:12.5px;margin-bottom:8px;">
+        Because <code>name.ai</code> Agent IDs live on Binance <strong>Agentic Wallets</strong> (not regular EOA wallets), enable <em>Developer Mode</em> in Binance App → Agentic Wallet → Settings, then run via <code>@binance/agentic-wallet</code> (<code>baw</code>) or paste directly into your AI Agent (OpenClaw / Claude / Cursor):
+      </div>
+      <pre id="bawCmd" style="margin-top:0;font-size:11.5px;"># Official Binance Agentic Wallet CLI (BNB Smart Chain, 0 BNB value, ~129k gas)
+baw contract-call preview \
+  --binanceChainId 56 \
+  --from &lt;YOUR_AGENTIC_WALLET_ADDRESS&gt; \
+  --to 0x315fF606193d638A59a5CD58bba83E048c1c4e96 \
+  --value 0 \
+  --inputData 0xa52609ca00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000 \
+  --json
+# Then confirm with the returned requestId:
+baw contract-call execute --requestId &lt;REQUEST_ID&gt; --json</pre>
+      <div class="status-msg" id="copyBawMsg"></div>
+    </div>
   </section>
 
   <!-- TAB 2: LIVE 7-IN-1 AI TERMINAL -->
@@ -589,6 +610,15 @@ function escapeHtml(s) {
 // Event bindings
 $("btnLang").onclick = () => { lang = lang === "en" ? "zh" : "en"; applyI18n(); };
 $("btnConnect").onclick = () => connectWithProvider(window.BinanceChain || window.ethereum, window.BinanceChain ? "Binance Wallet" : "Injected Wallet");
+$("btnCopyBaw").onclick = async () => {
+  const promptTxt = `Use my Binance Agentic Wallet (baw CLI) on BNB Smart Chain (binanceChainId 56) to preview and execute claimPass("") on 0x315fF606193d638A59a5CD58bba83E048c1c4e96 with value 0 and inputData 0xa52609ca00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000`;
+  try {
+    await navigator.clipboard.writeText(promptTxt);
+    $("copyBawMsg").innerHTML = `<span class="ok">Copied! Paste into OpenClaw / Claude / Cursor with binance-agentic-wallet skill.</span>`;
+  } catch {
+    $("copyBawMsg").textContent = promptTxt;
+  }
+};
 
 document.querySelectorAll(".tab").forEach((btn) => {
   btn.onclick = () => {
