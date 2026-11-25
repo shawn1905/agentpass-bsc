@@ -204,7 +204,7 @@
     </p>
     <div class="row" style="margin-top:12px;">
       <input id="inpLabel" class="grow" placeholder="Optional handle (e.g. satoshi.ai) — leave blank to keep current" />
-      <button id="btnClaim" class="primary" disabled data-i18n="btnClaim">Claim / Extend 24h Pass</button>
+      <button id="btnClaim" class="primary" data-i18n="btnClaim">Claim / Extend 24h Pass</button>
     </div>
     <div class="status-msg" id="claimMsg"></div>
   </section>
@@ -213,7 +213,7 @@
   <section class="panel card" id="panel-intel">
     <h3>
       <span data-i18n="intelTitle">Live 7-in-1 Zero-Proxy AI Intelligence Terminal</span>
-      <button id="btnSignAuth" disabled data-i18n="btnSignAuth">Sign Free EIP-191 Session (5m, 0 Gas)</button>
+      <button id="btnSignAuth" data-i18n="btnSignAuth">Sign Free EIP-191 Session (5m, 0 Gas)</button>
     </h3>
     <p class="muted" data-i18n="intelDesc">
       Normally billed per-call in Base USDC via x402 ($0.004–$0.008/req). With an active BSC AgentPass, sign a free off-chain EIP-191 message
@@ -241,7 +241,7 @@
     <div class="row" style="margin-top:10px;">
       <input id="inpEpUrl" class="grow" placeholder="Your Agent MCP / x402 / A2A URL (https://...)" />
       <input id="inpEpCap" class="grow" placeholder="Capabilities (e.g. SEC Filings, Funding Signals, RAG Markdown)" />
-      <button id="btnRegEp" class="primary" disabled data-i18n="btnRegEp">Publish Endpoint On-Chain</button>
+      <button id="btnRegEp" class="primary" data-i18n="btnRegEp">Publish Endpoint On-Chain</button>
     </div>
     <div class="status-msg" id="dirMsg"></div>
     <div id="dirList" style="margin-top:16px;"></div>
@@ -342,12 +342,15 @@ const I18N = {
 let lang = (navigator.language || "").toLowerCase().startsWith("zh") ? "zh" : "en";
 let selectedTool = TOOLS[0];
 let signer = null;
+let connectedProvider = null;
 let userAddress = "";
+let userHasAgentId = null;
 let authSession = null; // { address, timestamp, signature }
 const discoveredProviders = [];
 
 const $ = (id) => document.getElementById(id);
 const readProvider = new ethers.JsonRpcProvider(CONFIG.BSC_RPC);
+const getReader = () => connectedProvider || readProvider;
 
 function applyI18n() {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
@@ -404,14 +407,15 @@ async function connectWithProvider(eip1193, label = "Injected Wallet") {
       }
     }
     const browserProvider = new ethers.BrowserProvider(eip1193);
+    connectedProvider = browserProvider;
     signer = await browserProvider.getSigner();
     userAddress = await signer.getAddress();
+    userHasAgentId = null;
     authSession = null;
     $("walletAddr").textContent = `${label}: ${userAddress}`;
     $("badgeNet").textContent = "BSC Mainnet (56)";
     $("badgeNet").className = "pill green";
     $("btnConnect").textContent = `${userAddress.slice(0, 6)}...${userAddress.slice(-4)}`;
-    $("btnSignAuth").disabled = false;
     await refreshUserStatus();
   } catch (e) {
     $("walletMsg").innerHTML = `<span class="err">${escapeHtml(e.shortMessage || e.message || String(e))}</span>`;
@@ -448,22 +452,24 @@ async function refreshGlobalStats() {
 async function refreshUserStatus() {
   if (!userAddress) return;
   try {
-    const idContract = new ethers.Contract(CONFIG.AGENT_ID_CONTRACT, AGENT_ID_ABI, readProvider);
+    const rdr = getReader();
+    const idContract = new ethers.Contract(CONFIG.AGENT_ID_CONTRACT, AGENT_ID_ABI, rdr);
     const bal = await idContract.balanceOf(userAddress);
     const hasId = bal > 0n;
+    userHasAgentId = hasId;
     $("badgeId").textContent = hasId ? "Agent ID: Verified" : "Agent ID: Not Found";
     $("badgeId").className = hasId ? "pill green" : "pill red";
-    $("btnClaim").disabled = !hasId || !CONFIG.REGISTRY_CONTRACT;
-    $("btnRegEp").disabled = !hasId || !CONFIG.REGISTRY_CONTRACT;
 
     if (CONFIG.REGISTRY_CONTRACT) {
-      const reg = new ethers.Contract(CONFIG.REGISTRY_CONTRACT, REGISTRY_ABI, readProvider);
+      const reg = new ethers.Contract(CONFIG.REGISTRY_CONTRACT, REGISTRY_ABI, rdr);
       const prof = await reg.getAgentProfile(userAddress);
       const active = prof.activePass;
       $("badgePass").textContent = active ? `Pass Active (Streak ${prof.streak}d)` : "Pass: Inactive";
       $("badgePass").className = active ? "pill green" : "pill gold";
       const expStr = Number(prof.expiry) > 0 ? new Date(Number(prof.expiry) * 1000).toLocaleString() : "Never";
-      $("walletMeta").textContent = `Handle: ${prof.label ? prof.label + ".ai" : "unset"} · Passes: ${prof.passes} · Endorsements: ${prof.endorsements} · Expiry: ${expStr}`;
+      $("walletMeta").textContent = hasId
+        ? `Handle: ${prof.label ? prof.label + ".ai" : "unset"} · Passes: ${prof.passes} · Endorsements: ${prof.endorsements} · Expiry: ${expStr}`
+        : `当前地址未持有 Binance Agent ID (name.ai)。请先在币安 App 免费领取 name.ai，或切换到持有 name.ai 的钱包。`;
     } else {
       $("badgePass").textContent = hasId ? "Direct Agent ID Mode" : "Pass: Needs Agent ID";
       $("badgePass").className = hasId ? "pill green" : "pill";
@@ -594,7 +600,19 @@ document.querySelectorAll(".tab").forEach((btn) => {
 });
 
 $("btnClaim").onclick = async () => {
-  if (!signer || !CONFIG.REGISTRY_CONTRACT) return;
+  if (!signer) {
+    $("claimMsg").innerHTML = `<span class="err">请先点击右上角连接 BSC 钱包 / Please connect your wallet first.</span>`;
+    await connectWithProvider(window.BinanceChain || window.ethereum, window.BinanceChain ? "Binance Wallet" : "Injected Wallet");
+    if (!signer) return;
+  }
+  if (!CONFIG.REGISTRY_CONTRACT) {
+    $("claimMsg").innerHTML = `<span class="err">Registry contract not configured.</span>`;
+    return;
+  }
+  if (userHasAgentId === false) {
+    $("claimMsg").innerHTML = `<span class="err">当前钱包 (${escapeHtml(userAddress.slice(0,8))}...${escapeHtml(userAddress.slice(-6))}) 未持有币安 Agent ID (name.ai)，合约会自动拒绝无 Agent ID 地址。请先在币安 App 免费领取 name.ai 或切换到持有 name.ai 的钱包。</span>`;
+    return;
+  }
   try {
     $("claimMsg").textContent = "Confirm transaction in your wallet...";
     const reg = new ethers.Contract(CONFIG.REGISTRY_CONTRACT, REGISTRY_ABI, signer);
@@ -609,7 +627,14 @@ $("btnClaim").onclick = async () => {
 };
 
 $("btnRegEp").onclick = async () => {
-  if (!signer || !CONFIG.REGISTRY_CONTRACT) return;
+  if (!signer) {
+    $("dirMsg").innerHTML = `<span class="err">请先连接 BSC 钱包 / Please connect your wallet first.</span>`;
+    return;
+  }
+  if (userHasAgentId === false) {
+    $("dirMsg").innerHTML = `<span class="err">当前钱包未持有币安 Agent ID (name.ai)，请先领取或切换持有 name.ai 的钱包。</span>`;
+    return;
+  }
   const epUrl = $("inpEpUrl").value.trim();
   const cap = $("inpEpCap").value.trim();
   if (!epUrl.startsWith("http")) {
@@ -631,7 +656,10 @@ $("btnRegEp").onclick = async () => {
 $("btnRefreshDir").onclick = refreshGlobalStats;
 
 $("btnSignAuth").onclick = async () => {
-  if (!signer) return;
+  if (!signer) {
+    $("intelMsg").innerHTML = `<span class="err">请先点击右上角连接 BSC 钱包 / Please connect your wallet first.</span>`;
+    return;
+  }
   try {
     const ts = String(Math.floor(Date.now() / 1000));
     const msg = [
